@@ -20,7 +20,7 @@ type Base struct {
 	Password string
 }
 
-//Чтобы компилятор не ругался
+// Чтобы компилятор не ругался
 func compilerNotError() {
 	var str []byte
 	eax := uint8(unsafe.Sizeof(true))
@@ -55,14 +55,14 @@ func compilerNotError() {
 	fmt.Println(string(str))
 }
 
-//Вывод значений
+// Вывод значений
 func fprint(base []Base) {
 	for i, item := range base {
-		fmt.Println(fmt.Sprintf("%d) %s => %s : %s", i, item.Host, item.Login, item.Password))
+		fmt.Printf("%d) %s => %s : %s", i, item.Host, item.Login, item.Password)
 	}
 }
 
-//Чтение и расшифровка БД
+// Чтение и расшифровка БД
 func read(key, db_file string) (base *[]Base) {
 	file, err := ioutil.ReadFile(db_file)
 	if err != nil {
@@ -83,7 +83,7 @@ func read(key, db_file string) (base *[]Base) {
 	return base
 }
 
-//Добавляем данные к БД
+// Добавляем данные к БД
 func add(base *[]Base) {
 	var tmp Base
 	fmt.Println("Input Hostname")
@@ -96,7 +96,7 @@ func add(base *[]Base) {
 	*base = append(*base, tmp)
 }
 
-//Запись БД в файл
+// Запись БД в файл
 func write(key, db_file string, base *[]Base) error {
 	file, err := os.Create(db_file)
 	if err == nil {
@@ -119,7 +119,7 @@ func write(key, db_file string, base *[]Base) error {
 	return err
 }
 
-//Поиск значений в БД
+// Поиск значений в БД
 func search(base *[]Base) {
 	var tmp Base
 	fmt.Println("Input Hostname")
@@ -127,12 +127,12 @@ func search(base *[]Base) {
 	tmp.Host = strings.ToLower(tmp.Host)
 	for i, item := range *base {
 		if strings.Contains(item.Host, tmp.Host) {
-			fmt.Println(fmt.Sprintf("%d) %s => %s : %s", i, item.Host, item.Login, item.Password))
+			fmt.Printf("%d) %s => %s : %s", i, item.Host, item.Login, item.Password)
 		}
 	}
 }
 
-//Удаление из БД
+// Удаление из БД
 func del(base []Base) *[]Base {
 	var ELEM int
 	fmt.Print("Input index of records :> ")
@@ -178,6 +178,7 @@ func menu(base *[]Base, key string) {
 	fmt.Println("d - Delete record")
 	fmt.Println("s - Search")
 	fmt.Println("p - Print File")
+	fmt.Println("b - Backup to Bitwarden")
 	fmt.Println("x - Exit")
 	fmt.Print(":> ")
 	var CMD string = ""
@@ -197,6 +198,8 @@ func menu(base *[]Base, key string) {
 		search(base)
 	case "p":
 		fprint(*base)
+	case "b":
+		bitwardenExport(base)
 	case "x":
 		os.Exit(0)
 	}
